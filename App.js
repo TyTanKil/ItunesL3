@@ -1,20 +1,72 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import SearchScreen from './components/SearchScreen';
+import DetailsScreen from './components/DetailsScreen';
+import { FavoritesProvider } from './FavoritesContext';
+import FavoriScreen from './components/FavoriScreen';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function App() {
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const App = () => {
+
+  const [favorites, setFavorites] = useState([]);
+
+
+  const SearchStack = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen name="Rechercher" component={SearchScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+        />
+      </Stack.Navigator>
+    );
+  };
+
+  const FavoritesStack = () => {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="MaBase"
+          component={FavoriScreen}
+          options={{ headerShown: false }}
+        />
+      </Stack.Navigator>
+    );
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <FavoritesProvider>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen
+            name="Recherche"
+            component={SearchStack}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="search" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Ma Base"
+            component={FavoritesStack}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="heart" size={size} color={color} />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </FavoritesProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
